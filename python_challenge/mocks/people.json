@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Sensei Lamister",
+    "isAlive": true,
+    "placeId": 1
+  },
+  {
+    "id": 2,
+    "name": "Aiba Stack",
+    "isAlive": true,
+    "placeId": 3
+  },
+  {
+    "id": 3,
+    "name": "Joaquín Nevado",
+    "isAlive": true,
+    "placeId": 3
+  },
+  {
+    "id": 4,
+    "name": "Dedo Gordo",
+    "isAlive": false,
+    "placeId": null
+  },
+  {
+    "id": 5,
+    "name": "Juanito Lamister",
+    "isAlive": true,
+    "placeId": 1
+  },
+  {
+    "id": 6,
+    "name": "Nerf Stack",
+    "isAlive": true,
+    "placeId": 3
+  }
+]
