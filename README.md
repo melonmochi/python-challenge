@@ -30,7 +30,9 @@ pip install -r requirements.txt
 
 ### 🗄️ Setup databases
 
-You need to provide two databases and setup them in the `config.py` file of the root directory:
+You **DO NOT** need to provide local databases, by default it's connected to AWS RDS's postgreSQL databases.
+
+In case you want to use your own dbs, you can setup them in the `config.py` file of the root directory:
 
 ```python
 class PeopleConfig(Config):
@@ -41,7 +43,7 @@ class PlacesConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'YOUR_PLACES_DB URL'
 ```
 
-We used [PostgreSQL](https://www.postgresql.org/) in our dev environment, theoretically it can be any relational db.
+We used [PostgreSQL](https://www.postgresql.org/) in our dev environment, theoretically it could be any relational db.
 
 ### ⚓ Places Server
 
