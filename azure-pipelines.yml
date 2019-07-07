@@ -1,0 +1,64 @@
+# Python Flask
+# Test a Flask project on multiple versions of Python.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+strategy:
+  matrix:
+    Python35:
+      PYTHON_VERSION: '3.5'
+    Python36:
+      PYTHON_VERSION: '3.6'
+    Python37:
+      PYTHON_VERSION: '3.7'
+  maxParallel: 3
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(PYTHON_VERSION)'
+    architecture: 'x64'
+
+- task: PythonScript@0
+  displayName: 'Export project path'
+  inputs:
+    scriptSource: 'inline'
+    script: |
+      """Search all subdirectories for `app.py`."""
+      from glob import iglob
+      from os import path
+      # Python >= 3.5
+      app_py = next(iglob(path.join('**', 'app.py'), recursive=True), None)
+      if not manage_py:
+          raise SystemExit('Could not find a Flask project')
+      project_location = path.dirname(path.abspath(app_py))
+      print('Found Flask project in', project_location)
+      print('##vso[task.setvariable variable=projectRoot]{}'.format(project_location))
+- script: |
+    python -m pip install --upgrade pip setuptools wheel
+    pip install -r requirements.txt
+  displayName: 'Install prerequisites'
+
+- script: |
+    flake8 .
+  displayName: 'Run lint tests'
+
+- script: |
+    python -m pytest --doctest-modules --junitxml=junit/test-results.xml --cov=src --cov-report=xml
+  displayName: 'Run unit tests'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFiles: '**/test-*.xml'
+    testRunTitle: 'Publish test results for Python $(python.version)'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
