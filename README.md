@@ -1,149 +1,84 @@
-La Compañía Plateada S.A. necesita hacer un estudio de cuanta gente vive en cada región de Juego de Tornos. Para ello, hay que construir un proyecto basado en microservicios que permita consultar y dar de alta datos sobre personajes y lugares de Poniente a través de APIs.
-Su idea es la siguiente:
-- Un microservicio para los Personajes (CRUD).
-- Otro microservicio para los Lugares (CRUD).
-- Otro microservicio que sirva de punto de entrada para los usuarios, teniendo que consultar los otros microservicios para componer su output (BaaS).
+# Python Challenge -Paradigma Digital. <http://eventos.paradigmadigital.com/python-challenge/>
 
-Los campos de las entidades serán:
-- **Personaje:** debe tener nombre, lugar al que pertenece y si es el rey de ese lugar. Y si está vivo o muerto (si no lo sabemos, lo daremos por muerto).
-- **Lugar:** debe tener un nombre.
+English | [Español](./README-es_ES.md)
 
+[![Build Status](https://dev.azure.com/melonmochi3/python-challenge/_apis/build/status/melonmochi3.python-challenge?branchName=master)](https://dev.azure.com/melonmochi3/python-challenge/_build/latest?definitionId=1?branchName=master)
 
-**¿Qué restricciones nos ponen?** 
-- Todos lo personajes deben pertenecer a un lugar, salvo que estén muertos, por lo que solo se podrían dar de alta personajes si ya existen lugares dados de alta.
-- Un lugar solamente puede tener un personaje que sea rey y esté vivo.
-- Las bases de datos están separadas, por lo que para hacer un Join de Lugares y Personas hay que utilizar el tercer microservicio para componer la salida.
+## ⌨️ Development
 
-
-Un compañero de La Compañía Plateada S.A. empezó el modelado de las APIs pero se ha cogido la baja por paternidad y te han pedido que continues con el trabajo y con el modelado:
-
-
-## Lugar Microservices
-El servicio "lugar" debe consultar en una base de datos los lugares y devolverlos, por ejemplo:
-
-place-microservice:8081/v1/places/
-```json
-[
-    {
-        "id": 1,
-        "name": "Descaro del Rey"
-    },
-    {
-        "id": 2,
-        "name": "Más allá del Zumo"
-    },
-    {
-        "id": 3,
-        "name": "Veranolandia"
-    }
-]
+```bash
+git clone git@github.com:melonmochi/python-challenge.git
+cd python-challenge
 ```
 
-## Personas Microservices
-Otro servicio debe consultar en otra base de datos las personas que viven en Juego de Tornos  y devolverlos, por ejemplo:
+## 🏈 Install
 
-people-microservice:8082/v1/people/
-```json
-[
-    {
-        "id": 1,
-        "name": "Sensei Lamister",
-        "isAlive": true,
-        "placeId": 1
-        
-    },
-    {
-        "id": 2,
-        "name": "Aiba Stack",
-        "isAlive": true,
-        "placeId": 3
-    },
-    {
-        "id": 3,
-        "name": "Joaquín Nevado",
-        "isAlive": true,
-        "placeId": 3
-    },
-    {
-        "id": 4,
-        "name": "Dedo Gordo",
-        "isAlive": false,
-        "placeId": null
-    },
-    {
-        "id": 5,
-        "name": "Juanito Lamister",
-        "isAlive": true,
-        "placeId": 1
-    },
-    {
-        "id": 6,
-        "name": "Nerf Stack",
-        "isAlive": true,
-        "placeId": 3
-    }
-]
+Setup a virtual env to install the package (recommended):
+
+```bash
+python3 -m venv env
+source ./env/bin/activate
 ```
 
+Install dependencies:
 
-## Juego de Tornos Microservices
-Por último, el tercer servicio, dado un id de lugar que se le pase, deberá exponer una api que, consultando las otras dos anteriores, componga una respusta en su api tal que:
-
-got-microservice:8083/v1/places/
-```json
-[
-    {
-        "id": 1,
-        "name": "Descaro del Rey",
-        "people": [
-            {
-                "id": 1,
-                "name": "Sensei Lamister",
-                "isAlive": true
-            }, {
-                "id": 5,
-                "name": "Juanito Lamister",
-                "isAlive": true
-            }
-        ]
-    },
-    {
-        "id": 2,
-        "name": "Más allá del Zumo",
-        "people": [
-            {
-                "id": 3,
-                "name": "Juaquín Nevado",
-                "isAlive": true
-            }
-        ]
-    },
-    {
-        "id": 3,
-        "name": "Veranolandia",
-        "people": [
-            {
-                "id": 2,
-                "name": "Aiba Stack",
-                "isAlive": true
-            }, {
-                "id": 6,
-                "name": "Nerf Stack",
-                "isAlive": true
-            }
-        ]
-    }
-]
+```bash
+pip install -r requirements.txt
 ```
 
-# Guidelines:
-- Usar Flask para contruir los servicios.
-- Usar flask_restplus o connexion para construir las APIs y exponer un Swagger.
-- Usar SQLAlchemy (sobre PostgreSQL o Mysql) para construir la BBDD.
-- Usar Alembic para crear la base de datos.
-- Poblar la base de datos con datos de prueba.
-- Documentar cómo arrancar el código.
-- Test unitarios.
+## 🏃 Run
 
-## Plus:
-- Dockerizar los 3 servicios.
+### 🗄️ Setup databases
+
+You need to provide two databases and setup them in the `config.py` file of the root directory:
+
+```python
+class PeopleConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'YOUR_PEOPLE_DB URL'
+
+
+class PlacesConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'YOUR_PLACES_DB URL'
+```
+
+We used [PostgreSQL](https://www.postgresql.org/) in our dev environment, theoretically it can be any relational db.
+
+### ⚓ Places Server
+
+```bash
+export FLASK_APP=app:places_app
+flask run --port=8081
+```
+
+Open your browser and visit <http://127.0.0.1:8081> to visit the places's swagger page.
+
+### ⚓ People Server
+
+```bash
+export FLASK_APP=app:people_app
+flask run --port=8082
+```
+
+Open your browser and visit <http://127.0.0.1:8082> to visit the people's swagger page.
+
+### 👑 GOT Server
+
+```bash
+export FLASK_APP=app:got_app
+flask run --port=8083
+```
+
+Open your browser and visit <http://127.0.0.1:8083> to visit the GOT's swagger page.
+
+## 🗺️ RoadMap
+
+- Use Docker to build app container. <https://www.docker.com/>
+- Use Kubernetes (K8s) as containers manager. <https://kubernetes.io/>
+
+## 🤝 Contributing [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
+We welcome all contributions.
+
+## 🌍 License
+
+[MIT](https://github.com/melonmochi/python-challenge/blob/master/LICENSE)

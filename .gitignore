@@ -109,3 +109,6 @@ db_config.py
 
 # vscode settings
 .vscode
+
+# alembic files (optional)
+.migrations
