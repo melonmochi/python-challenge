@@ -52,7 +52,7 @@ flask run --port=8081
 
 Open your browser and visit <http://127.0.0.1:8081> to visit the places's swagger page.
 
-### ⚓ People Server
+### 🤼 People Server
 
 ```bash
 export FLASK_APP=app:people_app
