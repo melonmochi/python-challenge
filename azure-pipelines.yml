@@ -34,7 +34,7 @@ steps:
       from os import path
       # Python >= 3.5
       app_py = next(iglob(path.join('**', 'app.py'), recursive=True), None)
-      if not manage_py:
+      if not app_py:
           raise SystemExit('Could not find a Flask project')
       project_location = path.dirname(path.abspath(app_py))
       print('Found Flask project in', project_location)
