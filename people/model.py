@@ -4,23 +4,8 @@ from sqlalchemy import Boolean, Column, Integer, String
 db = SQLAlchemy()
 
 
-#  Places Model
-class Places(db.Model):
-    __bind_key__ = 'places'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(64), unique=True, nullable=False)
-
-    @property
-    def serializable(self):
-        return {'id': self.id, 'name': self.name}
-
-    def __repr__(self):
-        return '<Place %r>' % self.name
-
-
 #  People Model
 class People(db.Model):
-    __bind_key__ = 'people'
     id = Column(Integer, primary_key=True)
     name = Column(String(64), unique=True, nullable=False)
     isAlive = Column(Boolean, default=False, nullable=False)
